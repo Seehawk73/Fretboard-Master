@@ -1,0 +1,152 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fretboard Master 4.1.1 — YouTube Jam Lab</title><style>
+:root{color-scheme:dark;font-family:system-ui,Segoe UI,sans-serif;background:#10151d;color:#eef4ff}*{box-sizing:border-box}body{max-width:1160px;margin:auto;padding:22px}h1{margin:0;font-size:clamp(1.6rem,3vw,2.5rem)}p{color:#aebcd0}h2{margin:0 0 12px;font-size:1.13rem}.panel{background:#1a2431;border:1px solid #334255;border-radius:16px;padding:18px;margin-top:16px}.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.grow{flex:1;min-width:200px}input,textarea,select,button{font:inherit;color:inherit;border:1px solid #4b5d73;border-radius:9px;padding:10px;background:#253348}button{cursor:pointer;background:#31577b}button:hover{filter:brightness(1.2)}button.active{background:#247d59;border-color:#51d4a2}button:disabled{opacity:.45;cursor:not-allowed}.muted{font-size:.88rem;color:#aebcd0}.status{color:#f4c76b}.video{aspect-ratio:16/9;max-height:440px;background:#080b10;border-radius:12px;overflow:hidden}.video iframe{width:100%;height:100%}.now{font-size:3rem;font-weight:800;color:#66e3a4}.next{font-size:1.2rem;color:#f2cf6a}.chords{display:flex;gap:8px;flex-wrap:wrap}.chip{border-radius:9px;padding:9px 12px;background:#2b3a4c;border:1px solid #43556c}.chip.current{background:#176a49;border-color:#6ce5a6}.chip.nextchip{border-color:#f2cf6a}.fretboard{overflow:auto;padding-bottom:6px}.string{display:grid;grid-template-columns:40px repeat(13,minmax(44px,1fr));min-width:690px;align-items:center}.string>div{height:43px;border-right:2px solid #5b6470;border-bottom:2px solid #a3a7ad;display:flex;align-items:center;justify-content:center;position:relative}.string .label{border:0;font-weight:800;color:#c6d4e6}.dot{border-radius:50%;width:30px;height:30px;display:grid;place-items:center;color:#0d1a24;font-weight:900;font-size:.85rem}.root{background:#66e3a4}.fifth{background:#78baff}.octave{background:#f2cf6a}.third{background:#d7a0ff}.seventh{background:#ff9f91}.second{background:#8fe5e2}.sixth{background:#f5b36b}.fourth{background:#9ecf87}.interval-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.interval-legend span{padding:5px 9px;border-radius:7px;background:#29394b}.timeline select{width:100%;min-width:155px}.practice-tag{color:#9feac2;font-weight:700}.fretlabels{display:grid;grid-template-columns:40px repeat(13,minmax(44px,1fr));min-width:690px;text-align:center;color:#aebcd0;font-size:.75rem}.timeline{width:100%;border-collapse:collapse}.timeline th,.timeline td{padding:7px;border-bottom:1px solid #3c4b5e;text-align:left}.timeline input{width:100%;min-width:70px}.timeline tr.selected{background:#1d4f3f}.note{padding:12px;border-left:3px solid #f2cf6a;background:#2a2b30;border-radius:8px}#playerState{font-size:.85rem;color:#f2cf6a}small{color:#aebcd0}details{margin-top:12px}code{color:#9fdeb9}@media(max-width:600px){body{padding:12px}.panel{padding:12px}.now{font-size:2.2rem}}</style></head><body><nav aria-label="Fretboard Master navigation" style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px 16px;margin:0 0 16px;border-radius:12px;background:#243451;color:#edf3ff;font:600 15px system-ui,sans-serif"><a href="./index.html" style="color:#8df0d8;text-decoration:none">⌂ Home</a><a href="./academy.html" style="color:#fff;text-decoration:none">🎓 Fretboard Academy</a><a href="./youtube-jam.html" style="color:#fff;text-decoration:none">🎸 YouTube Jam Lab</a></nav>
+<header><h1>🎸 Fretboard Master <span style="color:#66e3a4">4.1.1</span></h1><p>YouTube Jam Lab · YouTube bass practice · Automatic looping chord timeline</p></header>
+<div class="panel"><h2>1 · YouTube backing track</h2><div class="row"><input class="grow" id="url" aria-label="YouTube URL" value="https://www.youtube.com/watch?v=u5BiPC59RRM"><button id="load">Load video</button></div><p class="muted">Uses the official embedded YouTube player. The video's creator must allow embedding. YouTube may display ads or require interaction.</p><div class="video"><div id="player"></div></div><div class="row" style="margin-top:12px"><button id="play">▶ Play / Pause</button><button id="back">↶ 5 seconds</button><button id="forward">5 seconds ↷</button><strong id="clock">0:00</strong><span id="playerState">Loading YouTube player…</span></div></div>
+<div class="panel"><h2>2 · Live chord guidance</h2><div class="row" style="justify-content:space-between"><div><div class="muted">CURRENT CHORD</div><div class="now" id="current">—</div><div class="next">Next: <span id="next">—</span></div></div><div><div class="muted">PRACTICE MODE</div><div class="row"><button id="free" class="active">Free Jam</button><button id="guided">Guided</button></div><div class="muted" id="guide">Root, fifth and octave available</div></div></div><div class="interval-legend" id="legend" aria-live="polite"></div><div class="chords" id="chords" style="margin-top:16px"></div><div class="fretboard" style="margin-top:20px"><div class="fretlabels" id="frets"></div><div id="strings"></div></div><p class="muted">Colored notes show the selected intervals on frets 0–12. In Free Jam, choose your own notes and rhythms; Guided mode offers a simple beat-by-beat focus, not a transcription of the recording.</p></div>
+<div class="panel"><h2>3 · Automatic chord timeline · repeat controls</h2>
+<p class="note"><strong>Loop mode:</strong> After the final bar, the chord chart wraps immediately to Fmaj7, while the YouTube clock continues. The green highlight in the video is not read by this app. The song form below is editable; if the backing track differs, edit its bars to match.</p>
+<div class="row"><label>Tempo (BPM) <input id="bpm" type="number" min="40" max="220" step="0.1" value="93" style="width:90px"></label><label>Beats per bar <input id="beats" type="number" min="1" max="12" value="4" style="width:75px"></label><label>First chord starts at (seconds) <input id="offset" type="number" min="0" max="600" step="0.1" value="17.5" style="width:95px"></label><button id="syncnow">Set start to current video time</button><button id="minus">Earlier −0.25s</button><button id="plus">Later +0.25s</button></div>
+<div class="row" style="margin:12px 0"><label><input type="checkbox" id="loop" checked> Repeat arrangement continuously</label><strong id="cycle" style="color:#66e3a4">Cycle 1 · Bar 1</strong><span id="cyclelength" class="muted"></span></div><p class="muted" id="markstatus">Default: 93 BPM · 4 beats/bar · first chord at 17.5 seconds.</p>
+<div class="row"><button id="export">Export timeline</button><button id="import">Import timeline</button><button id="reset">Reset to 93 BPM / 4/4</button></div>
+<div class="note" style="margin:14px 0"><div class="row"><label for="songmode"><strong>🎸 Bass Fill Explorer — default for all bars</strong></label><select id="songmode" aria-label="Default note combination for the whole song"></select><button id="clearoverrides" type="button" title="Make every bar follow the song-wide selection">Reset All Bars to Song Default</button></div><p class="muted" style="margin-bottom:0">Set the whole song here, then customize individual bars below. A bar set to “Use song default” follows this choice. Your choices repeat each cycle. Free Jam lets you choose when and how often to play each highlighted note.</p></div><div style="overflow-x:auto"><table class="timeline"><thead><tr><th>Bar</th><th>Section</th><th>Chord (editable)</th><th>Notes to highlight</th><th>First cycle start</th></tr></thead><tbody id="rows"></tbody></table></div>
+<details><summary>Edit expanded chord sequence</summary><p class="muted">One line per chord: <code>Section | Chord</code>. Repeats are already expanded. Use this for corrections after checking the video. Each line is one bar. The entire list repeats in order.</p><textarea id="sequence" rows="12" style="width:100%"></textarea><div class="row"><button id="apply">Apply edited sequence</button><button id="restore">Restore starter arrangement</button></div></details>
+</div>
+<footer><p class="muted">Version 4.1.1 · Bass Fill Explorer · Full song looping · Local browser app · No YouTube audio download or analysis · Runs independently of your earlier versions.</p></footer>
+<script>
+const $=id=>document.getElementById(id);
+const storage='fretboard-master-youtube-jam-4.1';
+const starter=`Intro 1 | Fmaj7
+Intro 1 | Dm7
+Intro 1 | Gm7
+Intro 1 | C7
+Intro 2 | Fmaj7
+Intro 2 | Dm7
+Intro 2 | Gm7
+Intro 2 | E♭maj7
+A 1 | Fmaj7
+A 1 | Dm7
+A 1 | Gm7
+A 1 | C7
+A 2 | Fmaj7
+A 2 | Dm7
+A 2 | Gm7
+A 2 | C7
+B | Am7
+B | Dm7
+B | Gm7
+B | Csus4
+C 1 | Fmaj7
+C 1 | Dm7
+C 1 | Gm7
+C 1 | C7
+C 2 | Fmaj7
+C 2 | Dm7
+C 2 | Gm7
+C 2 | C7
+C 3 | Fmaj7
+C 3 | Dm7
+C 3 | Gm7
+C 3 | C7
+C 4 | Fmaj7
+C 4 | Dm7
+C 4 | Gm7
+C 4 | C7`;
+const parse=s=>s.split('\n').map(x=>x.trim()).filter(Boolean).map(x=>{const p=x.split('|');return {section:(p.length>1?p[0]:'Jam').trim(),chord:(p.length>1?p.slice(1).join('|'):p[0]).trim()}});
+let saved={};try{saved=JSON.parse(localStorage.getItem(storage))||{}}catch(e){}
+let steps=Array.isArray(saved.steps)&&saved.steps.length?saved.steps:parse(starter);
+const fillModes=[['root','Roots only'],['rf','Roots + Fifths'],['ro','Roots + Octaves'],['rfo','Roots + Fifths + Octaves'],['r35','Roots + Thirds + Fifths'],['tones','All chord tones'],['pent','Pentatonic notes']];
+let songMode=fillModes.some(m=>m[0]===saved.songMode)?saved.songMode:'root';
+const validMode=v=>fillModes.some(m=>m[0]===v);
+const fillName=v=>fillModes.find(m=>m[0]===v)?.[1]||'Roots only';
+function addModeOptions(select,includeDefault=false){if(includeDefault){let o=new Option('Use song default','default');select.add(o)}for(let [value,label] of fillModes)select.add(new Option(label,value))}
+addModeOptions($('songmode'));$('songmode').value=songMode;
+$('songmode').onchange=()=>{songMode=$('songmode').value;save();render()};
+$('clearoverrides').onclick=()=>{steps.forEach(step=>delete step.fillMode);save();renderRows();$('markstatus').textContent='All bar-specific note selections cleared. Every bar now follows the song default.';};
+function selectedMode(i){return i>=0&&validMode(steps[i]?.fillMode)?steps[i].fillMode:songMode}
+
+let mode='free',player=null,ready=false,time=0,lastActive=-2,lastCycle=-1;
+$('url').value=saved.url||$('url').value;
+$('bpm').value=saved.bpm||93;$('beats').value=saved.beats||4;$('offset').value=saved.offset??17.5;$('loop').checked=saved.loop!==false;
+$('sequence').value=steps.map(s=>`${s.section} | ${s.chord}`).join('\n');
+function save(){try{localStorage.setItem(storage,JSON.stringify({steps,url:$('url').value,bpm:Number($('bpm').value),beats:Number($('beats').value),offset:Number($('offset').value),loop:$('loop').checked,songMode}))}catch(e){}}
+function ytId(value){let m=value.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?[^#]*?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);return m?m[1]:/^[\w-]{11}$/.test(value)?value:null}
+function format(t){t=Math.max(0,t);return `${Math.floor(t/60)}:${String(Math.floor(t%60)).padStart(2,'0')}`}
+function load(){let id=ytId($('url').value);if(!id){$('playerState').textContent='Please enter a valid YouTube link';return}save();if(!ready){$('playerState').textContent='Waiting for YouTube API…';return}if(player&&player.loadVideoById){player.cueVideoById(id);$('playerState').textContent='Video loaded';return}player=new YT.Player('player',{videoId:id,playerVars:{playsinline:1,origin:location.origin},events:{onReady:()=>{$('playerState').textContent='Ready'},onError:e=>{$('playerState').textContent='YouTube error '+e.data+' — video may not allow embedding'},onStateChange:e=>{$('playerState').textContent=({[-1]:'Ready',[0]:'Ended',[1]:'Playing',[2]:'Paused',[3]:'Buffering',[5]:'Cued'})[e.data]||'Player'}}})}
+window.onYouTubeIframeAPIReady=()=>{ready=true;load()};let api=document.createElement('script');api.src='https://www.youtube.com/iframe_api';document.head.appendChild(api);
+$('load').onclick=load;$('play').onclick=()=>{if(!player?.getPlayerState)return;let s=player.getPlayerState();if(s===1)player.pauseVideo();else player.playVideo()};$('back').onclick=()=>player?.seekTo?.(Math.max(0,time-5),true);$('forward').onclick=()=>player?.seekTo?.(time+5,true);
+const names=['E','F','F#','G','G#','A','A#','B','C','C#','D','D#'];const strings=[['G',15],['D',10],['A',5],['E',0]];const chroma=n=>((n%12)+12)%12;
+const pcName=s=>{let m=s.replaceAll('♭','b').match(/^([A-G])([#b]?)/);if(!m)return null;let v={C:8,D:10,E:0,F:1,G:3,A:5,B:7}[m[1]];return chroma(v+(m[2]==='#'?1:m[2]==='b'?-1:0))};
+function settings(){return {bpm:Math.max(1,Number($('bpm').value)||93),beats:Math.max(1,Number($('beats').value)||4),offset:Math.max(0,Number($('offset').value)||0)}}
+function barSeconds(){let s=settings();return 60*s.beats/s.bpm}
+function absoluteBar(t){const {offset}=settings();if(!steps.length||t+0.03<offset)return -1;return Math.floor(Math.max(0,t-offset+0.03)/barSeconds())}
+function activeIndex(t){const bar=absoluteBar(t);if(bar<0)return -1;if(!$('loop').checked&&bar>=steps.length)return -1;return bar%steps.length}
+function chordIntervals(chord){
+  const c=chord.replaceAll('♭','b').trim();
+  const minor=/^[A-G][#b]?m(?!aj)/i.test(c), sus4=/sus4/i.test(c), sus2=/sus2/i.test(c);
+  const major7=/maj7|M7|Δ7/.test(c), has7=/7/.test(c);
+  const third=sus4?5:sus2?2:minor?3:4;
+  const seventh=major7?11:10;
+  return {third,seventh,has7,sus4,sus2,minor};
+}
+function roleNotes(chord,choice){
+  const q=chordIntervals(chord),third=q.third===3?'♭3':q.third===4?'3':q.third===5?'4':'2';
+  const tones=[{offset:0,role:'root',label:'R'},{offset:q.third,role:q.sus4?'fourth':q.sus2?'second':'third',label:third},{offset:7,role:'fifth',label:'5'}];
+  if(q.has7)tones.push({offset:q.seventh,role:'seventh',label:q.seventh===11?'7':'♭7'});
+  if(choice==='root')return [tones[0]];
+  if(choice==='rf')return [tones[0],tones[2]];
+  if(choice==='ro')return [tones[0],{offset:12,role:'octave',label:'8'}];
+  if(choice==='rfo')return [tones[0],tones[2],{offset:12,role:'octave',label:'8'}];
+  if(choice==='r35')return tones.slice(0,3);
+  if(choice==='tones')return tones;
+  if(choice==='pent')return q.minor?[
+    {offset:0,role:'root',label:'R'},{offset:3,role:'third',label:'♭3'},{offset:5,role:'fourth',label:'4'},{offset:7,role:'fifth',label:'5'},{offset:10,role:'seventh',label:'♭7'}
+  ]:[{offset:0,role:'root',label:'R'},{offset:2,role:'second',label:'2'},{offset:4,role:'third',label:'3'},{offset:7,role:'fifth',label:'5'},{offset:9,role:'sixth',label:'6'}];
+  return [tones[0]];
+}
+function drawBoard(chord,idx){
+  const root=pcName(chord),choice=selectedMode(idx),roles=roleNotes(chord,choice);
+  $('frets').innerHTML='<div></div>'+Array.from({length:13},(_,i)=>`<div>${i}</div>`).join('');$('strings').innerHTML='';
+  $('legend').innerHTML='';
+  for(const r of roles){const tag=document.createElement('span');tag.textContent=`${r.label} ${r.role==='root'?'Root':r.role==='octave'?'Octave':r.role==='third'?'Third':r.role==='fifth'?'Fifth':r.role==='seventh'?'Seventh':r.role==='second'?'Second':r.role==='fourth'?'Fourth':'Sixth'}`;$('legend').appendChild(tag)}
+  const s=settings(),beat=Math.floor(Math.max(0,time-s.offset)*s.bpm/60)%Math.max(1,s.beats);
+  const focus=roles[beat%roles.length];
+  $('guide').textContent=(mode==='free'?'Free Jam · ':'Guided · beat '+(beat+1)+' · ')+fillName(choice)+(mode==='guided'?` · focus ${focus.label}`:'');
+  if(root===null)return;
+  const openMidi={E:40,A:45,D:50,G:55};
+  const rootPositions=[];
+  for(const [name,open] of strings)for(let fret=0;fret<=12;fret++)if(chroma(open+fret)===root)rootPositions.push(openMidi[name]+fret);
+  const anchor=Math.min(...rootPositions);
+  for(const [name,open] of strings){
+    const row=document.createElement('div');row.className='string';const lbl=document.createElement('div');lbl.className='label';lbl.textContent=name;row.appendChild(lbl);
+    for(let fret=0;fret<=12;fret++){
+      const cell=document.createElement('div'),midi=openMidi[name]+fret,pitch=chroma(open+fret);
+      let role=roles.find(r=>chroma(root+r.offset)===pitch && r.role!=='octave' && r.role!=='root');
+      if(pitch===root){
+        const octave=roles.find(r=>r.role==='octave');
+        const rt=roles.find(r=>r.role==='root');
+        role=(octave&&midi>=anchor+12)?octave:rt;
+      }
+      if(role&&(mode==='free'||role===focus)){
+        const dot=document.createElement('span');dot.className='dot '+role.role;
+        dot.title=`${name} string, fret ${fret}: ${role.label}`;
+        dot.textContent=role.label;cell.appendChild(dot);
+      }
+      row.appendChild(cell);
+    }
+    $('strings').appendChild(row);
+  }
+}
+
+function render(){let idx=activeIndex(time),chord=idx<0?'—':steps[idx]?.chord||'—';$('clock').textContent=format(time);$('current').textContent=chord;const abs=absoluteBar(time);const cycle=abs<0?0:Math.floor(abs/steps.length)+1;const bar=idx<0?0:idx+1;$('cycle').textContent=abs<0?'Waiting for first chord':(!$('loop').checked&&idx<0?'Arrangement ended':`Cycle ${cycle} · Bar ${bar} of ${steps.length}`);$('next').textContent=idx<0?(steps[0]?.chord||'—'):(steps[(idx+1)%steps.length]?.chord||'—');$('chords').innerHTML='';for(let k=0;k<Math.min(6,steps.length);k++){let i=idx<0?k:(idx+k)%steps.length;let c=document.createElement('div');c.className='chip '+(idx>=0&&k===0?'current':idx>=0&&k===1?'nextchip':'');c.textContent=steps[i].chord;$('chords').appendChild(c)}drawBoard(chord,idx);if(idx!==lastActive){lastActive=idx;document.querySelectorAll('#rows tr').forEach((tr,i)=>tr.classList.toggle('selected',i===idx))}}
+function renderRows(){const tbody=$('rows'),{offset}=settings(),dur=barSeconds();tbody.innerHTML='';$('cyclelength').textContent=`${steps.length} bars · ${((steps.length*dur)/60).toFixed(2)} minutes per cycle`;steps.forEach((s,i)=>{let tr=document.createElement('tr');let a=document.createElement('td');a.textContent=i+1;tr.appendChild(a);let b=document.createElement('td');b.textContent=s.section;tr.appendChild(b);let c=document.createElement('td');let inp=document.createElement('input');inp.value=s.chord;inp.setAttribute('aria-label',`Chord for bar ${i+1}`);inp.addEventListener('change',()=>{steps[i].chord=inp.value.trim()||s.chord;$('sequence').value=steps.map(x=>`${x.section} | ${x.chord}`).join('\n');save();render()});c.appendChild(inp);tr.appendChild(c);let fill=document.createElement('td');let sel=document.createElement('select');sel.setAttribute('aria-label',`Fill notes for bar ${i+1}`);addModeOptions(sel,true);sel.value=validMode(s.fillMode)?s.fillMode:'default';sel.addEventListener('change',()=>{if(sel.value==='default')delete steps[i].fillMode;else steps[i].fillMode=sel.value;save();render()});fill.appendChild(sel);tr.appendChild(fill);let d=document.createElement('td');d.textContent=`${format(offset+i*dur)} (${(offset+i*dur).toFixed(2)}s)`;tr.appendChild(d);tbody.appendChild(tr)});lastActive=-2;render()}
+function update(){save();renderRows()}
+$('loop').addEventListener('change',()=>{save();render()});for(let id of ['bpm','beats','offset'])$(id).addEventListener('change',update);
+$('syncnow').onclick=()=>{$('offset').value=time.toFixed(2);update();$('markstatus').textContent=`First Fmaj7 set at ${time.toFixed(2)} seconds. Check the next green-box change against the app.`};
+$('minus').onclick=()=>{$('offset').value=Math.max(0,Number($('offset').value)-.25).toFixed(2);update()};$('plus').onclick=()=>{$('offset').value=(Number($('offset').value)+.25).toFixed(2);update()};
+$('reset').onclick=()=>{$('bpm').value=93;$('beats').value=4;$('offset').value=17.5;$('loop').checked=true;update()};
+$('apply').onclick=()=>{steps=parse($('sequence').value).map((s,i)=>({...s,...(steps[i]?.fillMode?{fillMode:steps[i].fillMode}:{})}));update()};$('restore').onclick=()=>{$('sequence').value=starter;steps=parse(starter);update()};
+$('free').onclick=()=>{mode='free';$('free').classList.add('active');$('guided').classList.remove('active');render()};$('guided').onclick=()=>{mode='guided';$('guided').classList.add('active');$('free').classList.remove('active');render()};
+$('export').onclick=()=>{let blob=new Blob([JSON.stringify({version:'4.1',video:$('url').value,steps,bpm:settings().bpm,beats:settings().beats,offset:settings().offset,loop:$('loop').checked,songMode},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='youtube-jam-v4.1-bass-fill-arrangement.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
+$('import').onclick=()=>{let input=document.createElement('input');input.type='file';input.accept='.json,application/json';input.onchange=async()=>{try{let obj=JSON.parse(await input.files[0].text());if(!Array.isArray(obj.steps))throw Error('Missing steps');steps=obj.steps.map(s=>({section:String(s.section||'Jam'),chord:String(s.chord||'C'),...(validMode(s.fillMode)?{fillMode:s.fillMode}:{})}));if(validMode(obj.songMode)){songMode=obj.songMode;$('songmode').value=songMode;}if(obj.video)$('url').value=obj.video;if(obj.bpm)$('bpm').value=obj.bpm;if(obj.beats)$('beats').value=obj.beats;if(obj.offset!=null)$('offset').value=obj.offset;if(obj.loop!=null)$('loop').checked=!!obj.loop;$('sequence').value=steps.map(s=>`${s.section} | ${s.chord}`).join('\n');update()}catch(e){alert('Unable to import: '+e.message)}};input.click()};
+renderRows();setInterval(()=>{if(player?.getCurrentTime){try{time=player.getCurrentTime()||0}catch(e){}}render()},120);
+</script></body></html>
