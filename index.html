@@ -1,217 +1,152 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#101725"><title>Project Bass • Fretboard Master</title><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icon-192.png" sizes="192x192" type="image/png"><link rel="apple-touch-icon" href="./icon-192.png"><style>
-:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#edf3ff;background:#0b1020}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0%,#24365b 0,transparent 55%),#0b1020;min-height:100vh}main{max-width:1060px;margin:auto;padding:24px 15px 50px}header{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}h1{font-size:clamp(24px,5vw,40px);margin:0;letter-spacing:-1px}h2{font-size:20px;margin:0 0 12px}.muted{color:#a7b6cf}.small{font-size:13px}.pill{background:#243451;border:1px solid #425a7d;border-radius:50px;padding:7px 12px;font-size:13px}.card{background:#151e30;border:1px solid #34445f;border-radius:18px;padding:20px;margin-top:18px;box-shadow:0 12px 30px #0002}.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}button,select{font:inherit}button{border:1px solid #47607f;border-radius:11px;background:#233450;color:#f5f8ff;padding:10px 14px;cursor:pointer;touch-action:manipulation}button:hover{background:#31486d}button.active,.primary{background:#57cbb1;color:#09231f;border-color:#57cbb1;font-weight:750}button:disabled{opacity:.45;cursor:default}select{background:#243451;color:white;border:1px solid #50617e;padding:9px;border-radius:9px} .flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.space{justify-content:space-between}.stat{background:#202d45;padding:12px 16px;border-radius:12px;flex:1;min-width:100px}.stat b{display:block;font-size:25px;color:#7fe6d0}.fret-scroll{overflow-x:auto;padding:10px 0}.fretboard{min-width:720px;position:relative;border:6px solid #4c3325;border-radius:12px;background:linear-gradient(100deg,#402a21,#67402a 52%,#402a21);padding:3px 0;box-shadow:inset 0 0 15px #0009}.fretrow{display:grid;grid-template-columns:54px repeat(13,minmax(43px,1fr));height:51px;align-items:stretch}.stringname{display:flex;align-items:center;justify-content:center;background:#182337;color:#fff;font-weight:750}.fret{position:relative;border-right:3px solid #b3b6ba;display:flex;justify-content:center;align-items:center;cursor:pointer;isolation:isolate}.fret:first-of-type{border-right:6px solid #f2e9d4}.fret:before{content:'';height:3px;position:absolute;left:0;right:0;top:50%;background:linear-gradient(#e6e7e8,#777);z-index:-1}.fretrow:nth-child(2) .fret:before{height:4px}.fretrow:nth-child(3) .fret:before{height:5px}.fretrow:nth-child(4) .fret:before{height:6px}.fret:hover{background:#ffffff1a}.note{background:#233b5f;border:1px solid #9bb4d9;border-radius:50%;width:32px;height:32px;display:grid;place-items:center;font-size:12px;font-weight:800}.note.highlight{background:#57cbb1;color:#08231d;border-color:#d3fff3}.note.wrong{background:#ec7485;color:#2c0710}.fretlabels{display:grid;grid-template-columns:54px repeat(13,minmax(43px,1fr));min-width:720px;text-align:center;color:#b6c4d8;font-size:12px;padding-top:7px}.target{font-size:clamp(35px,9vw,65px);font-weight:850;color:#7fe6d0;letter-spacing:-2px}.message{min-height:24px;color:#fbd78a;font-weight:600}.hidden{display:none}.options{display:flex;gap:8px;flex-wrap:wrap}.options button{min-width:52px}.foot{margin-top:20px;color:#8fa0b9;font-size:13px}.progress{height:8px;background:#2c3d56;border-radius:20px;overflow:hidden}.progress div{height:100%;background:#57cbb1;width:0;transition:width .2s}.hint{color:#b8c9e3;line-height:1.6}input[type=checkbox]{accent-color:#57cbb1}label{cursor:pointer}.sectionhead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}@media(max-width:600px){.card{padding:15px}.stat b{font-size:21px}}
-</style>
-<style>
-.tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin:14px 0}
-.tool-panel{background:#202d45;border:1px solid #34445f;border-radius:13px;padding:16px}
-.tool-panel h3{margin:0 0 9px;font-size:16px}
-.tool-panel p{margin:6px 0}
-.big-readout{font-size:clamp(32px,6vw,55px);font-weight:850;color:#7fe6d0}
-.tones{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
-.tone{padding:9px 13px;border-radius:12px;background:#263955;border:1px solid #47607f}
-.tone strong{color:#7fe6d0}
-.control-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:12px 0}
-input[type=range]{accent-color:#57cbb1;max-width:100%}
-.note.help{background:#edbf73;color:#1b1a0b;border-color:#fff1c2}
-.note.root{background:#57cbb1;color:#09231f}
-.note.third{background:#e9bb79;color:#281709}
-.note.fifth{background:#a9a0ef;color:#170d36}
-.note.seventh{background:#ee8f9d;color:#290e1c}
-.note.pattern{background:#b1c8ec;color:#0b2037}
-.legend{display:flex;gap:15px;flex-wrap:wrap;margin:12px 0;color:#b8c9e3;font-size:13px}
-.legend i{display:inline-block;width:13px;height:13px;border-radius:50%;margin-right:5px;vertical-align:-2px}
-#tempoReadout{font-variant-numeric:tabular-nums}
-</style>
-<style>
-/* v2.1 responsive mobile refinements */
-html{-webkit-text-size-adjust:100%}button,select,input{touch-action:manipulation}
-.tabs{scrollbar-width:thin}.tabs button{white-space:nowrap}
-.mobile-tip{display:none;color:#b8c9e3;font-size:12px;margin:8px 0}
-.audio-controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:16px}
-.audio-controls label{display:flex;flex-direction:column;gap:8px}
-.audio-controls select,.audio-controls input{width:100%}
-.audio-note{font-size:13px;color:#b8c9e3;line-height:1.55}
-@media(max-width:680px){
- main{padding:15px 10px 32px}header{gap:8px}header h1{font-size:25px}
- .tabs{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;padding:0 0 8px;scroll-snap-type:x proximity}
- .tabs button{flex:0 0 auto;scroll-snap-align:start;min-height:46px}
- .card{padding:13px;margin-top:13px;border-radius:14px}
- .fret-scroll{margin-right:-5px;padding-bottom:12px}
- .fretboard{min-width:720px}.fretrow{height:56px}
- .tool-grid{grid-template-columns:1fr}.control-row{gap:9px}
- button,select{min-height:44px}.mobile-tip{display:block}
- .sectionhead{align-items:flex-start}.sectionhead label{width:100%}
- .sectionhead select{max-width:100%}
-}
-</style></head><body><main><header><div><div class="muted small">🎸 YOUR YAMAHA • STANDARD E–A–D–G</div><h1>Project Bass <span style="color:#7fe6d0">Fretboard Master</span></h1><div class="muted">Learn the notes. Train your hands. Build musical instincts.</div></div><span class="pill">Offline • No subscription</span></header>
-<nav class="tabs" aria-label="Learning modules"><button class="active" data-tab="challenge">🎯 Find the Note</button><button data-tab="identify">🧠 Name the Note</button><button data-tab="explore">🎸 Explore</button><button data-tab="rhythm">🥁 Rhythm Lab</button><button data-tab="intervals">↔️ Intervals</button><button data-tab="chords">🎼 Triads</button><button data-tab="scales">🎶 Scales</button><button data-tab="stats">📈 Progress</button></nav>
-<section id="challenge" class="card"><div class="sectionhead"><h2>Find the Note</h2><div class="flex"><label class="small">Difficulty <select id="difficulty"><option value="natural">Natural notes</option><option value="all">All notes (♯ / ♭)</option></select></label><label class="small">Frets <select id="range"><option value="7">0–7</option><option value="12" selected>0–12</option></select></label></div></div><p class="muted">Find the requested note on the requested string. Play it on your bass first, then tap the fret on the screen.</p><div class="flex space"><div><div class="small muted">FIND THIS NOTE</div><div class="target" id="target">C</div><div class="muted" id="stringTarget">on the A string</div></div><div class="flex"><button id="reveal">Show answer</button><button class="primary" id="next">Next challenge →</button></div></div><div class="message" id="message" aria-live="polite"></div><div class="progress"><div id="sessionBar"></div></div><p class="small muted" id="sessionText">0 correct of 0 attempts</p></section>
-<section id="identify" class="card hidden"><h2>Name the Note</h2><p class="muted">Look at the highlighted fret. Say the note aloud, then choose its name.</p><div class="flex space"><div><div class="small muted" id="idPrompt">WHAT NOTE IS THIS?</div><div class="target" id="idLocation">E • 3</div></div><button class="primary" id="idNext">Next question →</button></div><div class="options" id="choices"></div><p class="message" id="idMessage" aria-live="polite"></p></section>
-<section id="explore" class="card hidden"><h2>Fretboard Explorer</h2><p class="muted">Tap any fret to see its note and hear its pitch. Turn on all note labels, or highlight every location of one note.</p><div class="flex"><label><input type="checkbox" id="showAll" checked> Show all note names</label><label class="small">Highlight note <select id="highlight"><option value="">None</option></select></label><button id="soundToggle">🔊 Sound on</button></div><p id="exploreInfo" class="hint">The 12th fret repeats the open string an octave higher.</p></section>
-
-<section id="rhythm" class="card hidden"><h2>Rhythm Lab • Metronome</h2>
-<p class="muted">Practice steady time with your bass. Start at 60–80 BPM, play a root note on each click, then try every other click.</p>
-<div class="tool-grid"><div class="tool-panel"><div class="small muted">TEMPO</div><div class="big-readout"><span id="tempoReadout">80</span> <span class="small">BPM</span></div>
-<div class="control-row"><button id="tempoDown" aria-label="Decrease tempo">−5</button><input id="tempo" aria-label="Tempo in beats per minute" type="range" min="40" max="220" step="1" value="80"><button id="tempoUp" aria-label="Increase tempo">+5</button></div>
-</div><div class="tool-panel"><div class="small muted">TIME SIGNATURE</div><div class="control-row"><select id="beats"><option value="4">4/4</option><option value="3">3/4</option><option value="2">2/4</option><option value="6">6/4</option></select></div>
-<div class="control-row"><label><input type="checkbox" id="accent" checked> Accent beat one</label></div><div class="big-readout" id="beatIndicator" aria-live="off">—</div></div></div>
-<div class="audio-controls tool-panel">
-<label>Metronome volume <span id="metVolumeLabel">75%</span><input id="metVolume" type="range" min="0" max="100" value="75" step="1"></label>
-<label>Click sound<select id="metSound"><option value="click">Classic click</option><option value="wood">Woodblock</option><option value="soft">Soft pulse</option></select></label>
-<label style="justify-content:center"><span>Bluetooth audio helper (experimental)</span><span><input id="metKeepAlive" type="checkbox"> Keep Bluetooth audio active</span></label>
-</div><p class="audio-note">The Bluetooth helper plays a very quiet continuous tone while the metronome runs. It may help speakers that fade out between clicks; turn it off if you hear a hum. Start at low speaker volume.</p>
-<div class="control-row"><button class="primary" id="metStart">▶ Start metronome</button><button id="tapTempo">Tap tempo</button><span id="metStatus" class="muted small">Stopped</span></div>
-<p class="hint">Tip: the metronome uses your device's audio. Keep this app open while practicing. Timing may vary slightly on some devices.</p></section>
-
-<section id="intervals" class="card hidden"><div class="sectionhead"><h2>Interval Explorer</h2><label class="small">Root <select id="intervalRoot"></select></label></div>
-<p class="muted">See every matching interval on your four-string fretboard. The root is mint; the interval is gold. Tap any highlighted position to hear it.</p>
-<div class="tool-grid"><div class="tool-panel"><h3>Choose an interval</h3><select id="intervalKind">
-<option value="0">Unison (0 semitones)</option><option value="1">Minor 2nd (1)</option><option value="2">Major 2nd (2)</option>
-<option value="3">Minor 3rd (3)</option><option value="4">Major 3rd (4)</option><option value="5">Perfect 4th (5)</option>
-<option value="6">Tritone (6)</option><option value="7" selected>Perfect 5th (7)</option><option value="8">Minor 6th (8)</option>
-<option value="9">Major 6th (9)</option><option value="10">Minor 7th (10)</option><option value="11">Major 7th (11)</option>
-<option value="12">Octave (12)</option></select></div>
-<div class="tool-panel"><h3>Relationship</h3><p id="intervalInfo" class="hint"></p><button id="intervalPlay">🔊 Hear interval</button></div></div>
-<div class="legend"><span><i style="background:#57cbb1"></i>Root</span><span><i style="background:#edbf73"></i>Interval</span></div></section>
-
-<section id="chords" class="card hidden"><div class="sectionhead"><h2>Triad & Chord Tone Trainer</h2><label class="small">Root <select id="chordRoot"></select></label></div>
-<p class="muted">Find the root, third, and fifth anywhere on your Yamaha. Use the highlighted notes to build bass lines around a chord.</p>
-<div class="tool-grid"><div class="tool-panel"><h3>Chord quality</h3><select id="chordQuality"><option value="major">Major</option><option value="minor">Minor</option><option value="dim">Diminished</option><option value="aug">Augmented</option></select>
-<div id="chordFormula" class="hint" style="margin-top:14px"></div></div>
-<div class="tool-panel"><h3>Chord tones</h3><div class="tones" id="chordTones"></div><button id="chordPlay">🔊 Hear arpeggio</button></div></div>
-<div class="legend"><span><i style="background:#57cbb1"></i>Root (1)</span><span><i style="background:#e9bb79"></i>Third (3)</span><span><i style="background:#a9a0ef"></i>Fifth (5)</span></div></section>
-
-<section id="scales" class="card hidden"><div class="sectionhead"><h2>Scale & Pentatonic Explorer</h2><label class="small">Root <select id="scaleRoot"></select></label></div>
-<p class="muted">Explore scale shapes and find notes across all four strings. The root is highlighted in mint. Tap a highlighted fret to hear it.</p>
-<div class="tool-grid"><div class="tool-panel"><h3>Choose a scale</h3><select id="scaleKind"><option value="major">Major (Ionian)</option><option value="minor">Natural minor (Aeolian)</option><option value="majorpent">Major pentatonic</option><option value="minorpent">Minor pentatonic</option><option value="blues">Minor blues</option></select>
-<p class="hint" id="scaleFormula"></p></div><div class="tool-panel"><h3>Scale notes</h3><div class="tones" id="scaleTones"></div><button id="scalePlay">🔊 Hear ascending scale</button></div></div>
-<div class="legend"><span><i style="background:#57cbb1"></i>Root</span><span><i style="background:#b1c8ec"></i>Scale tone</span></div></section>
-<div class="card"><div class="sectionhead"><h2>Interactive fretboard</h2><span class="small muted">Top: G • Bottom: E</span></div><p class="mobile-tip">📱 Swipe the fretboard left or right to see more frets. Rotate your phone for a wider view.</p><div class="fret-scroll" tabindex="0" aria-label="Scrollable bass fretboard"><div id="board" class="fretboard"></div><div id="labels" class="fretlabels"></div></div><p class="small muted">Each vertical column is one fret. Sharps and flats share the same fret (for example, G♯ = A♭). Tap a position to answer or explore.</p></div>
-<section id="stats" class="card hidden"><h2>Your practice progress</h2><div class="flex"><div class="stat"><span class="muted small">Lifetime correct</span><b id="totalCorrect">0</b></div><div class="stat"><span class="muted small">Accuracy</span><b id="accuracy">—</b></div><div class="stat"><span class="muted small">Best streak</span><b id="best">0</b></div><div class="stat"><span class="muted small">Practice days</span><b id="days">0</b></div></div><h2 style="margin-top:24px">Notes to revisit</h2><p id="weak" class="hint">Practice a few questions to see which notes need more attention.</p><button id="reset">Reset saved progress</button><p class="small muted">Progress is saved in this browser on this device, when browser storage is available. It does not sync between devices.</p></section>
-<div class="card"><h2>Cam's 10-minute daily workout</h2><p class="hint">2 minutes: name anchor notes on the E and A strings. • 3 minutes: Find the Note. • 3 minutes: Name the Note. • 2 minutes: play roots from a song you're learning. Keep it relaxed and aim for recognition without counting.</p></div><div class="foot">Version 2.1 • Android & Audio Edition • Made for Project Bass • Standard four-string tuning • Equal-tempered fretted bass • Works offline after saving this HTML file</div></main>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Fretboard Master 4.1.1 — YouTube Jam Lab</title><style>
+:root{color-scheme:dark;font-family:system-ui,Segoe UI,sans-serif;background:#10151d;color:#eef4ff}*{box-sizing:border-box}body{max-width:1160px;margin:auto;padding:22px}h1{margin:0;font-size:clamp(1.6rem,3vw,2.5rem)}p{color:#aebcd0}h2{margin:0 0 12px;font-size:1.13rem}.panel{background:#1a2431;border:1px solid #334255;border-radius:16px;padding:18px;margin-top:16px}.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.grow{flex:1;min-width:200px}input,textarea,select,button{font:inherit;color:inherit;border:1px solid #4b5d73;border-radius:9px;padding:10px;background:#253348}button{cursor:pointer;background:#31577b}button:hover{filter:brightness(1.2)}button.active{background:#247d59;border-color:#51d4a2}button:disabled{opacity:.45;cursor:not-allowed}.muted{font-size:.88rem;color:#aebcd0}.status{color:#f4c76b}.video{aspect-ratio:16/9;max-height:440px;background:#080b10;border-radius:12px;overflow:hidden}.video iframe{width:100%;height:100%}.now{font-size:3rem;font-weight:800;color:#66e3a4}.next{font-size:1.2rem;color:#f2cf6a}.chords{display:flex;gap:8px;flex-wrap:wrap}.chip{border-radius:9px;padding:9px 12px;background:#2b3a4c;border:1px solid #43556c}.chip.current{background:#176a49;border-color:#6ce5a6}.chip.nextchip{border-color:#f2cf6a}.fretboard{overflow:auto;padding-bottom:6px}.string{display:grid;grid-template-columns:40px repeat(13,minmax(44px,1fr));min-width:690px;align-items:center}.string>div{height:43px;border-right:2px solid #5b6470;border-bottom:2px solid #a3a7ad;display:flex;align-items:center;justify-content:center;position:relative}.string .label{border:0;font-weight:800;color:#c6d4e6}.dot{border-radius:50%;width:30px;height:30px;display:grid;place-items:center;color:#0d1a24;font-weight:900;font-size:.85rem}.root{background:#66e3a4}.fifth{background:#78baff}.octave{background:#f2cf6a}.third{background:#d7a0ff}.seventh{background:#ff9f91}.second{background:#8fe5e2}.sixth{background:#f5b36b}.fourth{background:#9ecf87}.interval-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.interval-legend span{padding:5px 9px;border-radius:7px;background:#29394b}.timeline select{width:100%;min-width:155px}.practice-tag{color:#9feac2;font-weight:700}.fretlabels{display:grid;grid-template-columns:40px repeat(13,minmax(44px,1fr));min-width:690px;text-align:center;color:#aebcd0;font-size:.75rem}.timeline{width:100%;border-collapse:collapse}.timeline th,.timeline td{padding:7px;border-bottom:1px solid #3c4b5e;text-align:left}.timeline input{width:100%;min-width:70px}.timeline tr.selected{background:#1d4f3f}.note{padding:12px;border-left:3px solid #f2cf6a;background:#2a2b30;border-radius:8px}#playerState{font-size:.85rem;color:#f2cf6a}small{color:#aebcd0}details{margin-top:12px}code{color:#9fdeb9}@media(max-width:600px){body{padding:12px}.panel{padding:12px}.now{font-size:2.2rem}}</style></head><body>
+<header><h1>🎸 Fretboard Master <span style="color:#66e3a4">4.1.1</span></h1><p>YouTube Jam Lab · YouTube bass practice · Automatic looping chord timeline</p></header>
+<div class="panel"><h2>1 · YouTube backing track</h2><div class="row"><input class="grow" id="url" aria-label="YouTube URL" value="https://www.youtube.com/watch?v=u5BiPC59RRM"><button id="load">Load video</button></div><p class="muted">Uses the official embedded YouTube player. The video's creator must allow embedding. YouTube may display ads or require interaction.</p><div class="video"><div id="player"></div></div><div class="row" style="margin-top:12px"><button id="play">▶ Play / Pause</button><button id="back">↶ 5 seconds</button><button id="forward">5 seconds ↷</button><strong id="clock">0:00</strong><span id="playerState">Loading YouTube player…</span></div></div>
+<div class="panel"><h2>2 · Live chord guidance</h2><div class="row" style="justify-content:space-between"><div><div class="muted">CURRENT CHORD</div><div class="now" id="current">—</div><div class="next">Next: <span id="next">—</span></div></div><div><div class="muted">PRACTICE MODE</div><div class="row"><button id="free" class="active">Free Jam</button><button id="guided">Guided</button></div><div class="muted" id="guide">Root, fifth and octave available</div></div></div><div class="interval-legend" id="legend" aria-live="polite"></div><div class="chords" id="chords" style="margin-top:16px"></div><div class="fretboard" style="margin-top:20px"><div class="fretlabels" id="frets"></div><div id="strings"></div></div><p class="muted">Colored notes show the selected intervals on frets 0–12. In Free Jam, choose your own notes and rhythms; Guided mode offers a simple beat-by-beat focus, not a transcription of the recording.</p></div>
+<div class="panel"><h2>3 · Automatic chord timeline · repeat controls</h2>
+<p class="note"><strong>Loop mode:</strong> After the final bar, the chord chart wraps immediately to Fmaj7, while the YouTube clock continues. The green highlight in the video is not read by this app. The song form below is editable; if the backing track differs, edit its bars to match.</p>
+<div class="row"><label>Tempo (BPM) <input id="bpm" type="number" min="40" max="220" step="0.1" value="93" style="width:90px"></label><label>Beats per bar <input id="beats" type="number" min="1" max="12" value="4" style="width:75px"></label><label>First chord starts at (seconds) <input id="offset" type="number" min="0" max="600" step="0.1" value="17.5" style="width:95px"></label><button id="syncnow">Set start to current video time</button><button id="minus">Earlier −0.25s</button><button id="plus">Later +0.25s</button></div>
+<div class="row" style="margin:12px 0"><label><input type="checkbox" id="loop" checked> Repeat arrangement continuously</label><strong id="cycle" style="color:#66e3a4">Cycle 1 · Bar 1</strong><span id="cyclelength" class="muted"></span></div><p class="muted" id="markstatus">Default: 93 BPM · 4 beats/bar · first chord at 17.5 seconds.</p>
+<div class="row"><button id="export">Export timeline</button><button id="import">Import timeline</button><button id="reset">Reset to 93 BPM / 4/4</button></div>
+<div class="note" style="margin:14px 0"><div class="row"><label for="songmode"><strong>🎸 Bass Fill Explorer — default for all bars</strong></label><select id="songmode" aria-label="Default note combination for the whole song"></select><button id="clearoverrides" type="button" title="Make every bar follow the song-wide selection">Reset All Bars to Song Default</button></div><p class="muted" style="margin-bottom:0">Set the whole song here, then customize individual bars below. A bar set to “Use song default” follows this choice. Your choices repeat each cycle. Free Jam lets you choose when and how often to play each highlighted note.</p></div><div style="overflow-x:auto"><table class="timeline"><thead><tr><th>Bar</th><th>Section</th><th>Chord (editable)</th><th>Notes to highlight</th><th>First cycle start</th></tr></thead><tbody id="rows"></tbody></table></div>
+<details><summary>Edit expanded chord sequence</summary><p class="muted">One line per chord: <code>Section | Chord</code>. Repeats are already expanded. Use this for corrections after checking the video. Each line is one bar. The entire list repeats in order.</p><textarea id="sequence" rows="12" style="width:100%"></textarea><div class="row"><button id="apply">Apply edited sequence</button><button id="restore">Restore starter arrangement</button></div></details>
+</div>
+<footer><p class="muted">Version 4.1.1 · Bass Fill Explorer · Full song looping · Local browser app · No YouTube audio download or analysis · Runs independently of your earlier versions.</p></footer>
 <script>
-(()=>{'use strict';const chrom=['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'], flats={'C♯':'D♭','D♯':'E♭','F♯':'G♭','G♯':'A♭','A♯':'B♭'},strings=[{name:'G',midi:43},{name:'D',midi:38},{name:'A',midi:33},{name:'E',midi:28}],$=id=>document.getElementById(id);let tab='challenge',task=null,idTask=null,revealed=false,sound=true,audio=null,session={tries:0,correct:0},data;try{data=JSON.parse(localStorage.getItem('pb_fret_v1'))||{tries:0,correct:0,best:0,streak:0,days:[],misses:{}}}catch(e){data={tries:0,correct:0,best:0,streak:0,days:[],misses:{}}}const save=()=>{try{localStorage.setItem('pb_fret_v1',JSON.stringify(data))}catch(e){}};const name=(s,f)=>chrom[(s.midi+f)%12];const label=n=>flats[n]?n+' / '+flats[n]:n;const isNatural=n=>!n.includes('♯');const rand=a=>a[Math.floor(Math.random()*a.length)];function noteSound(midi){if(!sound)return;try{audio=audio||new(window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();let o=audio.createOscillator(),g=audio.createGain(),t=audio.currentTime;o.type='triangle';o.frequency.value=440*Math.pow(2,(midi-69)/12);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.13,t+.025);g.gain.exponentialRampToValueAtTime(.0001,t+.65);o.connect(g).connect(audio.destination);o.start(t);o.stop(t+.7)}catch(e){}}function record(ok,n){data.tries++;session.tries++;if(ok){data.correct++;session.correct++;data.streak++;data.best=Math.max(data.best,data.streak)}else{data.streak=0;data.misses[n]=(data.misses[n]||0)+1}let d=new Date().toLocaleDateString('en-CA');if(!data.days.includes(d))data.days.push(d);save();$('sessionBar').style.width=(session.tries?session.correct/session.tries*100:0)+'%';$('sessionText').textContent=`${session.correct} correct of ${session.tries} attempts`;stats()}function maxFret(){return +$('range').value}function chooseTask(){let choices=[];for(let s=0;s<4;s++)for(let f=0;f<=maxFret();f++){let n=name(strings[s],f);if($('difficulty').value==='all'||isNatural(n))choices.push({s,f,n})}task=rand(choices);revealed=false;$('target').textContent=label(task.n);$('stringTarget').textContent='on the '+strings[task.s].name+' string';$('message').textContent='';$('reveal').textContent='Show answer';draw()}function chooseId(){let choices=[];for(let s=0;s<4;s++)for(let f=0;f<=maxFret();f++){let n=name(strings[s],f);if($('difficulty').value==='all'||isNatural(n))choices.push({s,f,n})}idTask=rand(choices);$('idLocation').textContent=strings[idTask.s].name+' string • fret '+idTask.f;$('idMessage').textContent='';let opts=[idTask.n];let pool=chrom.filter(x=>x!==idTask.n&&($('difficulty').value==='all'||isNatural(x)));while(opts.length<4)opts.push(rand(pool.filter(x=>!opts.includes(x))));opts.sort(()=>Math.random()-.5);$('choices').innerHTML='';for(let n of opts){let b=document.createElement('button');b.textContent=label(n);b.onclick=()=>{if($('idMessage').dataset.answered==='yes')return;let ok=n===idTask.n;record(ok,idTask.n);$('idMessage').textContent=ok?'✓ Correct!':'Not quite — it’s '+label(idTask.n);$('idMessage').dataset.answered='yes';noteSound(strings[idTask.s].midi+idTask.f);draw()};$('choices').appendChild(b)}$('idMessage').dataset.answered='no';draw()}function draw(){let board=$('board');board.innerHTML='';for(let s=0;s<4;s++){let row=document.createElement('div');row.className='fretrow';let sn=document.createElement('div');sn.className='stringname';sn.textContent=strings[s].name;row.appendChild(sn);for(let f=0;f<=12;f++){let cell=document.createElement('div');cell.className='fret';let n=name(strings[s],f);let show=tab==='explore'&&$('showAll').checked,hilite=tab==='explore'&&$('highlight').value===n,answer=tab==='challenge'&&revealed&&task.s===s&&task.f===f,question=tab==='identify'&&idTask&&idTask.s===s&&idTask.f===f;let marker=document.createElement('span');marker.className='note'+(hilite||answer||question?' highlight':'');marker.textContent=show?label(n).split(' / ')[0]:(answer?label(n).split(' / ')[0]:(question?'?':(hilite?'●':'')));if(!show&&!hilite&&!answer&&!question)marker.style.visibility='hidden';
-let pattern=patternForTab();
-if(pattern){let pitch=(strings[s].midi+f)%12, degree=(pitch-pattern.root+12)%12, idx=pattern.steps.indexOf(degree);
-if(idx>=0){marker.style.visibility='visible';marker.textContent=n;marker.className='note '+(degree===0?'root':tab==='intervals'?'help':tab==='chords'?(idx===1?'third':'fifth'):'pattern');}
-else marker.style.visibility='hidden';
-}cell.appendChild(marker);cell.onclick=()=>{if(tab==='challenge'){if(revealed)return;let ok=s===task.s&&f===task.f;record(ok,task.n);if(ok){$('message').textContent='✓ Nailed it! '+strings[s].name+' string, fret '+f+' = '+label(n);noteSound(strings[s].midi+f);revealed=true;draw()}else{$('message').textContent='Not quite — that fret is '+label(n)+'. Try again or reveal the answer.'}}else if(['intervals','chords','scales'].includes(tab)){if(pattern&&pattern.steps.includes(((strings[s].midi+f)%12-pattern.root+12)%12))noteSound(strings[s].midi+f)}else if(tab==='explore'){let oct=Math.floor((strings[s].midi+f)/12)-1;$('exploreInfo').textContent=`${strings[s].name} string, fret ${f}: ${label(n)}${oct}. Same note name appears in other positions.`;noteSound(strings[s].midi+f)}};row.appendChild(cell)}board.appendChild(row)}$('labels').innerHTML='<div></div>'+Array.from({length:13},(_,i)=>'<div>'+i+'</div>').join('')}function stats(){$('totalCorrect').textContent=data.correct;$('accuracy').textContent=data.tries?Math.round(data.correct/data.tries*100)+'%':'—';$('best').textContent=data.best;$('days').textContent=data.days.length;let weak=Object.entries(data.misses).sort((a,b)=>b[1]-a[1]).slice(0,5);$('weak').textContent=weak.length?weak.map(([n,k])=>label(n)+' ('+k+' misses)').join(' • '):'Practice a few questions to see which notes need more attention.'}document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{tab=b.dataset.tab;if(tab!=='rhythm')stopMetronome();document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));['challenge','identify','explore','rhythm','intervals','chords','scales','stats'].forEach(t=>$(t).classList.toggle('hidden',t!==tab));draw()});$('next').onclick=chooseTask;$('reveal').onclick=()=>{revealed=!revealed;$('reveal').textContent=revealed?'Hide answer':'Show answer';$('message').textContent=revealed?`Answer: ${strings[task.s].name} string, fret ${task.f} (${label(task.n)})`:'';draw()};$('idNext').onclick=chooseId;$('difficulty').onchange=()=>{chooseTask();chooseId()};$('range').onchange=()=>{chooseTask();chooseId()};$('showAll').onchange=draw;$('highlight').onchange=draw;$('soundToggle').onclick=()=>{sound=!sound;$('soundToggle').textContent=sound?'🔊 Sound on':'🔇 Sound off'};$('reset').onclick=()=>{if(confirm('Erase all saved practice progress on this device?')){data={tries:0,correct:0,best:0,streak:0,days:[],misses:{}};save();stats()}};for(let n of chrom){let o=document.createElement('option');o.value=n;o.textContent=label(n);$('highlight').appendChild(o)}
-// v2 learning tools — keep v1 storage key and all original practice statistics intact.
-const pitchName=i=>chrom[(i+120)%12];
-const populateRoot=id=>{for(let i=0;i<12;i++){let o=document.createElement('option');o.value=i;o.textContent=label(chrom[i]);$(id).appendChild(o)}};
-['intervalRoot','chordRoot','scaleRoot'].forEach(populateRoot);
-$('intervalRoot').value='4';$('chordRoot').value='2';$('scaleRoot').value='4';
-const chordSteps={major:[0,4,7],minor:[0,3,7],dim:[0,3,6],aug:[0,4,8]};
-const scaleSteps={major:[0,2,4,5,7,9,11],minor:[0,2,3,5,7,8,10],majorpent:[0,2,4,7,9],minorpent:[0,3,5,7,10],blues:[0,3,5,6,7,10]};
-function patternForTab(){
- if(tab==='intervals'){let n=+$('intervalKind').value;return {root:+$('intervalRoot').value,steps:[0,n%12]}}
- if(tab==='chords')return {root:+$('chordRoot').value,steps:chordSteps[$('chordQuality').value]};
- if(tab==='scales')return {root:+$('scaleRoot').value,steps:scaleSteps[$('scaleKind').value]};
- return null;
-}
-function renderTools(){
- let root=+$('intervalRoot').value,semis=+$('intervalKind').value;
- $('intervalInfo').textContent=semis===12?'Octave: the same note name, 12 semitones (one octave) higher.':`From ${label(pitchName(root))}, move ${semis} semitone${semis===1?'':'s'} to ${label(pitchName(root+semis))}.`;
- root=+$('chordRoot').value;let chord=chordSteps[$('chordQuality').value];
- $('chordTones').innerHTML=chord.map((step,i)=>`<span class="tone"><strong>${['1','3','5'][i]}</strong> ${label(pitchName(root+step))}</span>`).join('');
- $('chordFormula').textContent='Semitones above root: '+chord.join(' • ')+'. Play these one at a time for an arpeggio.';
- root=+$('scaleRoot').value;let scale=scaleSteps[$('scaleKind').value];
- $('scaleTones').innerHTML=scale.map(step=>`<span class="tone">${label(pitchName(root+step))}</span>`).join('');
- $('scaleFormula').textContent='Semitones above root: '+scale.join(' • ')+'.';
- draw();
-}
-['intervalRoot','intervalKind','chordRoot','chordQuality','scaleRoot','scaleKind'].forEach(id=>$(id).onchange=renderTools);
-function playPattern(root,steps){
- if(!sound){$('soundToggle').textContent='🔇 Sound off';return}
- // Web Audio scheduling is more reliable than delayed DOM events.
- try{
-  audio=audio||new(window.AudioContext||window.webkitAudioContext)();
-  if(audio.state==='suspended')audio.resume();
-  const start=audio.currentTime+.05;
-  steps.forEach((step,i)=>{
-   let midi=40+((root-4+12)%12)+step;
-   let osc=audio.createOscillator(),gain=audio.createGain(),t=start+i*.36;
-   osc.type='triangle';osc.frequency.value=440*Math.pow(2,(midi-69)/12);
-   gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.12,t+.025);
-   gain.gain.exponentialRampToValueAtTime(.0001,t+.3);
-   osc.connect(gain).connect(audio.destination);osc.start(t);osc.stop(t+.32);
-  });
- }catch(e){}
-}
-$('intervalPlay').onclick=()=>{let r=+$('intervalRoot').value,n=+$('intervalKind').value;playPattern(r,[0,n])};
-$('chordPlay').onclick=()=>playPattern(+$('chordRoot').value,chordSteps[$('chordQuality').value]);
-$('scalePlay').onclick=()=>{let r=+$('scaleRoot').value;playPattern(r,[...scaleSteps[$('scaleKind').value],12])};
-// Web Audio metronome with look-ahead scheduling; local timer only drives scheduling, not sound timing.
-let metTimer=null,metBeat=0,nextBeatTime=0,tapTimes=[];
-let metBus=null,keepOsc=null,keepGain=null;
-function setupMetAudio(){
- if(!metBus){metBus=audio.createGain();metBus.connect(audio.destination)}
- metBus.gain.value=Math.pow(+$('metVolume').value/100,1.25)*0.85;
-}
-function stopKeepAlive(){if(keepOsc){try{keepOsc.stop()}catch(e){}keepOsc.disconnect();keepOsc=null}if(keepGain){keepGain.disconnect();keepGain=null}}
-function syncKeepAlive(){
- stopKeepAlive();if(metTimer===null||!$('metKeepAlive').checked||!audio)return;
- // Low-level sustained signal may keep certain Bluetooth paths awake. Not guaranteed.
- keepOsc=audio.createOscillator();keepGain=audio.createGain();keepOsc.type='sine';keepOsc.frequency.value=165;
- keepGain.gain.value=0.0015;keepOsc.connect(keepGain).connect(metBus);keepOsc.start();
-}
-function metClick(time,accented){
- try{
-  setupMetAudio();
-  const type=$('metSound').value;
-  let osc=audio.createOscillator(),gain=audio.createGain();
-  osc.type=type==='wood'?'triangle':type==='soft'?'sine':'square';
-  osc.frequency.setValueAtTime(type==='wood'?(accented?850:620):type==='soft'?(accented?700:510):(accented?1100:820),time);
-  if(type==='wood')osc.frequency.exponentialRampToValueAtTime(accented?450:320,time+.035);
-  let peak=accented?.20:.14,duration=type==='soft'?.12:type==='wood'?.095:.07;
-  gain.gain.setValueAtTime(.0001,time);
-  gain.gain.exponentialRampToValueAtTime(peak,time+.004);
-  gain.gain.exponentialRampToValueAtTime(.0001,time+duration);
-  osc.connect(gain).connect(metBus);osc.start(time);osc.stop(time+duration+.01);
- }catch(e){}
-}
-function scheduleMet(){
- if(!audio)return;
- while(nextBeatTime<audio.currentTime+.12){
-  const beats=+$('beats').value,b=metBeat%beats;
-  metClick(nextBeatTime,b===0&&$('accent').checked);
-  // The visual beat indicator may lag audio slightly; sound is scheduled precisely.
-  const delay=Math.max(0,(nextBeatTime-audio.currentTime)*1000);
-  setTimeout(()=>{if(metTimer!==null)$('beatIndicator').textContent=String(b+1)},delay);
-  metBeat++;nextBeatTime+=60/(+$('tempo').value);
- }
-}
-function stopMetronome(){
- if(metTimer!==null){clearInterval(metTimer);metTimer=null}stopKeepAlive();
- $('metStart').textContent='▶ Start metronome';$('beatIndicator').textContent='—';$('metStatus').textContent='Stopped';
-}
-$('metStart').onclick=()=>{
- if(metTimer!==null){stopMetronome();return}
- try{
-  audio=audio||new(window.AudioContext||window.webkitAudioContext)();
-  if(audio.state==='suspended')audio.resume();
-  metBeat=0;nextBeatTime=audio.currentTime+.08;
-  metTimer=setInterval(scheduleMet,25);setupMetAudio();syncKeepAlive();scheduleMet();
-  $('metStart').textContent='■ Stop metronome';$('metStatus').textContent='Playing';
- }catch(e){$('metStatus').textContent='Audio unavailable on this device'}
-};
-function updateTempo(v){$('tempo').value=Math.max(40,Math.min(220,Math.round(v)));$('tempoReadout').textContent=$('tempo').value}
-$('metVolume').oninput=()=>{$('metVolumeLabel').textContent=$('metVolume').value+'%';if(metBus)metBus.gain.value=Math.pow(+$('metVolume').value/100,1.25)*0.85};
-$('metKeepAlive').onchange=syncKeepAlive;
-$('tempo').oninput=()=>updateTempo(+$('tempo').value);
-$('tempoDown').onclick=()=>updateTempo(+$('tempo').value-5);
-$('tempoUp').onclick=()=>updateTempo(+$('tempo').value+5);
-$('beats').onchange=()=>{metBeat=0};
-$('tapTempo').onclick=()=>{
- let now=performance.now();tapTimes=tapTimes.filter(t=>now-t<2500);tapTimes.push(now);
- if(tapTimes.length>=2){let gaps=tapTimes.slice(1).map((t,i)=>t-tapTimes[i]);let avg=gaps.reduce((a,b)=>a+b,0)/gaps.length;updateTempo(60000/avg)}
-};
-window.addEventListener('pagehide',stopMetronome);
-renderTools();
+const $=id=>document.getElementById(id);
+const storage='fretboard-master-youtube-jam-4.1';
+const starter=`Intro 1 | Fmaj7
+Intro 1 | Dm7
+Intro 1 | Gm7
+Intro 1 | C7
+Intro 2 | Fmaj7
+Intro 2 | Dm7
+Intro 2 | Gm7
+Intro 2 | E♭maj7
+A 1 | Fmaj7
+A 1 | Dm7
+A 1 | Gm7
+A 1 | C7
+A 2 | Fmaj7
+A 2 | Dm7
+A 2 | Gm7
+A 2 | C7
+B | Am7
+B | Dm7
+B | Gm7
+B | Csus4
+C 1 | Fmaj7
+C 1 | Dm7
+C 1 | Gm7
+C 1 | C7
+C 2 | Fmaj7
+C 2 | Dm7
+C 2 | Gm7
+C 2 | C7
+C 3 | Fmaj7
+C 3 | Dm7
+C 3 | Gm7
+C 3 | C7
+C 4 | Fmaj7
+C 4 | Dm7
+C 4 | Gm7
+C 4 | C7`;
+const parse=s=>s.split('\n').map(x=>x.trim()).filter(Boolean).map(x=>{const p=x.split('|');return {section:(p.length>1?p[0]:'Jam').trim(),chord:(p.length>1?p.slice(1).join('|'):p[0]).trim()}});
+let saved={};try{saved=JSON.parse(localStorage.getItem(storage))||{}}catch(e){}
+let steps=Array.isArray(saved.steps)&&saved.steps.length?saved.steps:parse(starter);
+const fillModes=[['root','Roots only'],['rf','Roots + Fifths'],['ro','Roots + Octaves'],['rfo','Roots + Fifths + Octaves'],['r35','Roots + Thirds + Fifths'],['tones','All chord tones'],['pent','Pentatonic notes']];
+let songMode=fillModes.some(m=>m[0]===saved.songMode)?saved.songMode:'root';
+const validMode=v=>fillModes.some(m=>m[0]===v);
+const fillName=v=>fillModes.find(m=>m[0]===v)?.[1]||'Roots only';
+function addModeOptions(select,includeDefault=false){if(includeDefault){let o=new Option('Use song default','default');select.add(o)}for(let [value,label] of fillModes)select.add(new Option(label,value))}
+addModeOptions($('songmode'));$('songmode').value=songMode;
+$('songmode').onchange=()=>{songMode=$('songmode').value;save();render()};
+$('clearoverrides').onclick=()=>{steps.forEach(step=>delete step.fillMode);save();renderRows();$('markstatus').textContent='All bar-specific note selections cleared. Every bar now follows the song default.';};
+function selectedMode(i){return i>=0&&validMode(steps[i]?.fillMode)?steps[i].fillMode:songMode}
 
-chooseTask();chooseId();stats()})();
-</script><script>
-if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
-  window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(() => {}));
+let mode='free',player=null,ready=false,time=0,lastActive=-2,lastCycle=-1;
+$('url').value=saved.url||$('url').value;
+$('bpm').value=saved.bpm||93;$('beats').value=saved.beats||4;$('offset').value=saved.offset??17.5;$('loop').checked=saved.loop!==false;
+$('sequence').value=steps.map(s=>`${s.section} | ${s.chord}`).join('\n');
+function save(){try{localStorage.setItem(storage,JSON.stringify({steps,url:$('url').value,bpm:Number($('bpm').value),beats:Number($('beats').value),offset:Number($('offset').value),loop:$('loop').checked,songMode}))}catch(e){}}
+function ytId(value){let m=value.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?[^#]*?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);return m?m[1]:/^[\w-]{11}$/.test(value)?value:null}
+function format(t){t=Math.max(0,t);return `${Math.floor(t/60)}:${String(Math.floor(t%60)).padStart(2,'0')}`}
+function load(){let id=ytId($('url').value);if(!id){$('playerState').textContent='Please enter a valid YouTube link';return}save();if(!ready){$('playerState').textContent='Waiting for YouTube API…';return}if(player&&player.loadVideoById){player.cueVideoById(id);$('playerState').textContent='Video loaded';return}player=new YT.Player('player',{videoId:id,playerVars:{playsinline:1,origin:location.origin},events:{onReady:()=>{$('playerState').textContent='Ready'},onError:e=>{$('playerState').textContent='YouTube error '+e.data+' — video may not allow embedding'},onStateChange:e=>{$('playerState').textContent=({[-1]:'Ready',[0]:'Ended',[1]:'Playing',[2]:'Paused',[3]:'Buffering',[5]:'Cued'})[e.data]||'Player'}}})}
+window.onYouTubeIframeAPIReady=()=>{ready=true;load()};let api=document.createElement('script');api.src='https://www.youtube.com/iframe_api';document.head.appendChild(api);
+$('load').onclick=load;$('play').onclick=()=>{if(!player?.getPlayerState)return;let s=player.getPlayerState();if(s===1)player.pauseVideo();else player.playVideo()};$('back').onclick=()=>player?.seekTo?.(Math.max(0,time-5),true);$('forward').onclick=()=>player?.seekTo?.(time+5,true);
+const names=['E','F','F#','G','G#','A','A#','B','C','C#','D','D#'];const strings=[['G',15],['D',10],['A',5],['E',0]];const chroma=n=>((n%12)+12)%12;
+const pcName=s=>{let m=s.replaceAll('♭','b').match(/^([A-G])([#b]?)/);if(!m)return null;let v={C:8,D:10,E:0,F:1,G:3,A:5,B:7}[m[1]];return chroma(v+(m[2]==='#'?1:m[2]==='b'?-1:0))};
+function settings(){return {bpm:Math.max(1,Number($('bpm').value)||93),beats:Math.max(1,Number($('beats').value)||4),offset:Math.max(0,Number($('offset').value)||0)}}
+function barSeconds(){let s=settings();return 60*s.beats/s.bpm}
+function absoluteBar(t){const {offset}=settings();if(!steps.length||t+0.03<offset)return -1;return Math.floor(Math.max(0,t-offset+0.03)/barSeconds())}
+function activeIndex(t){const bar=absoluteBar(t);if(bar<0)return -1;if(!$('loop').checked&&bar>=steps.length)return -1;return bar%steps.length}
+function chordIntervals(chord){
+  const c=chord.replaceAll('♭','b').trim();
+  const minor=/^[A-G][#b]?m(?!aj)/i.test(c), sus4=/sus4/i.test(c), sus2=/sus2/i.test(c);
+  const major7=/maj7|M7|Δ7/.test(c), has7=/7/.test(c);
+  const third=sus4?5:sus2?2:minor?3:4;
+  const seventh=major7?11:10;
+  return {third,seventh,has7,sus4,sus2,minor};
 }
+function roleNotes(chord,choice){
+  const q=chordIntervals(chord),third=q.third===3?'♭3':q.third===4?'3':q.third===5?'4':'2';
+  const tones=[{offset:0,role:'root',label:'R'},{offset:q.third,role:q.sus4?'fourth':q.sus2?'second':'third',label:third},{offset:7,role:'fifth',label:'5'}];
+  if(q.has7)tones.push({offset:q.seventh,role:'seventh',label:q.seventh===11?'7':'♭7'});
+  if(choice==='root')return [tones[0]];
+  if(choice==='rf')return [tones[0],tones[2]];
+  if(choice==='ro')return [tones[0],{offset:12,role:'octave',label:'8'}];
+  if(choice==='rfo')return [tones[0],tones[2],{offset:12,role:'octave',label:'8'}];
+  if(choice==='r35')return tones.slice(0,3);
+  if(choice==='tones')return tones;
+  if(choice==='pent')return q.minor?[
+    {offset:0,role:'root',label:'R'},{offset:3,role:'third',label:'♭3'},{offset:5,role:'fourth',label:'4'},{offset:7,role:'fifth',label:'5'},{offset:10,role:'seventh',label:'♭7'}
+  ]:[{offset:0,role:'root',label:'R'},{offset:2,role:'second',label:'2'},{offset:4,role:'third',label:'3'},{offset:7,role:'fifth',label:'5'},{offset:9,role:'sixth',label:'6'}];
+  return [tones[0]];
+}
+function drawBoard(chord,idx){
+  const root=pcName(chord),choice=selectedMode(idx),roles=roleNotes(chord,choice);
+  $('frets').innerHTML='<div></div>'+Array.from({length:13},(_,i)=>`<div>${i}</div>`).join('');$('strings').innerHTML='';
+  $('legend').innerHTML='';
+  for(const r of roles){const tag=document.createElement('span');tag.textContent=`${r.label} ${r.role==='root'?'Root':r.role==='octave'?'Octave':r.role==='third'?'Third':r.role==='fifth'?'Fifth':r.role==='seventh'?'Seventh':r.role==='second'?'Second':r.role==='fourth'?'Fourth':'Sixth'}`;$('legend').appendChild(tag)}
+  const s=settings(),beat=Math.floor(Math.max(0,time-s.offset)*s.bpm/60)%Math.max(1,s.beats);
+  const focus=roles[beat%roles.length];
+  $('guide').textContent=(mode==='free'?'Free Jam · ':'Guided · beat '+(beat+1)+' · ')+fillName(choice)+(mode==='guided'?` · focus ${focus.label}`:'');
+  if(root===null)return;
+  const openMidi={E:40,A:45,D:50,G:55};
+  const rootPositions=[];
+  for(const [name,open] of strings)for(let fret=0;fret<=12;fret++)if(chroma(open+fret)===root)rootPositions.push(openMidi[name]+fret);
+  const anchor=Math.min(...rootPositions);
+  for(const [name,open] of strings){
+    const row=document.createElement('div');row.className='string';const lbl=document.createElement('div');lbl.className='label';lbl.textContent=name;row.appendChild(lbl);
+    for(let fret=0;fret<=12;fret++){
+      const cell=document.createElement('div'),midi=openMidi[name]+fret,pitch=chroma(open+fret);
+      let role=roles.find(r=>chroma(root+r.offset)===pitch && r.role!=='octave' && r.role!=='root');
+      if(pitch===root){
+        const octave=roles.find(r=>r.role==='octave');
+        const rt=roles.find(r=>r.role==='root');
+        role=(octave&&midi>=anchor+12)?octave:rt;
+      }
+      if(role&&(mode==='free'||role===focus)){
+        const dot=document.createElement('span');dot.className='dot '+role.role;
+        dot.title=`${name} string, fret ${fret}: ${role.label}`;
+        dot.textContent=role.label;cell.appendChild(dot);
+      }
+      row.appendChild(cell);
+    }
+    $('strings').appendChild(row);
+  }
+}
+
+function render(){let idx=activeIndex(time),chord=idx<0?'—':steps[idx]?.chord||'—';$('clock').textContent=format(time);$('current').textContent=chord;const abs=absoluteBar(time);const cycle=abs<0?0:Math.floor(abs/steps.length)+1;const bar=idx<0?0:idx+1;$('cycle').textContent=abs<0?'Waiting for first chord':(!$('loop').checked&&idx<0?'Arrangement ended':`Cycle ${cycle} · Bar ${bar} of ${steps.length}`);$('next').textContent=idx<0?(steps[0]?.chord||'—'):(steps[(idx+1)%steps.length]?.chord||'—');$('chords').innerHTML='';for(let k=0;k<Math.min(6,steps.length);k++){let i=idx<0?k:(idx+k)%steps.length;let c=document.createElement('div');c.className='chip '+(idx>=0&&k===0?'current':idx>=0&&k===1?'nextchip':'');c.textContent=steps[i].chord;$('chords').appendChild(c)}drawBoard(chord,idx);if(idx!==lastActive){lastActive=idx;document.querySelectorAll('#rows tr').forEach((tr,i)=>tr.classList.toggle('selected',i===idx))}}
+function renderRows(){const tbody=$('rows'),{offset}=settings(),dur=barSeconds();tbody.innerHTML='';$('cyclelength').textContent=`${steps.length} bars · ${((steps.length*dur)/60).toFixed(2)} minutes per cycle`;steps.forEach((s,i)=>{let tr=document.createElement('tr');let a=document.createElement('td');a.textContent=i+1;tr.appendChild(a);let b=document.createElement('td');b.textContent=s.section;tr.appendChild(b);let c=document.createElement('td');let inp=document.createElement('input');inp.value=s.chord;inp.setAttribute('aria-label',`Chord for bar ${i+1}`);inp.addEventListener('change',()=>{steps[i].chord=inp.value.trim()||s.chord;$('sequence').value=steps.map(x=>`${x.section} | ${x.chord}`).join('\n');save();render()});c.appendChild(inp);tr.appendChild(c);let fill=document.createElement('td');let sel=document.createElement('select');sel.setAttribute('aria-label',`Fill notes for bar ${i+1}`);addModeOptions(sel,true);sel.value=validMode(s.fillMode)?s.fillMode:'default';sel.addEventListener('change',()=>{if(sel.value==='default')delete steps[i].fillMode;else steps[i].fillMode=sel.value;save();render()});fill.appendChild(sel);tr.appendChild(fill);let d=document.createElement('td');d.textContent=`${format(offset+i*dur)} (${(offset+i*dur).toFixed(2)}s)`;tr.appendChild(d);tbody.appendChild(tr)});lastActive=-2;render()}
+function update(){save();renderRows()}
+$('loop').addEventListener('change',()=>{save();render()});for(let id of ['bpm','beats','offset'])$(id).addEventListener('change',update);
+$('syncnow').onclick=()=>{$('offset').value=time.toFixed(2);update();$('markstatus').textContent=`First Fmaj7 set at ${time.toFixed(2)} seconds. Check the next green-box change against the app.`};
+$('minus').onclick=()=>{$('offset').value=Math.max(0,Number($('offset').value)-.25).toFixed(2);update()};$('plus').onclick=()=>{$('offset').value=(Number($('offset').value)+.25).toFixed(2);update()};
+$('reset').onclick=()=>{$('bpm').value=93;$('beats').value=4;$('offset').value=17.5;$('loop').checked=true;update()};
+$('apply').onclick=()=>{steps=parse($('sequence').value).map((s,i)=>({...s,...(steps[i]?.fillMode?{fillMode:steps[i].fillMode}:{})}));update()};$('restore').onclick=()=>{$('sequence').value=starter;steps=parse(starter);update()};
+$('free').onclick=()=>{mode='free';$('free').classList.add('active');$('guided').classList.remove('active');render()};$('guided').onclick=()=>{mode='guided';$('guided').classList.add('active');$('free').classList.remove('active');render()};
+$('export').onclick=()=>{let blob=new Blob([JSON.stringify({version:'4.1',video:$('url').value,steps,bpm:settings().bpm,beats:settings().beats,offset:settings().offset,loop:$('loop').checked,songMode},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='youtube-jam-v4.1-bass-fill-arrangement.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)};
+$('import').onclick=()=>{let input=document.createElement('input');input.type='file';input.accept='.json,application/json';input.onchange=async()=>{try{let obj=JSON.parse(await input.files[0].text());if(!Array.isArray(obj.steps))throw Error('Missing steps');steps=obj.steps.map(s=>({section:String(s.section||'Jam'),chord:String(s.chord||'C'),...(validMode(s.fillMode)?{fillMode:s.fillMode}:{})}));if(validMode(obj.songMode)){songMode=obj.songMode;$('songmode').value=songMode;}if(obj.video)$('url').value=obj.video;if(obj.bpm)$('bpm').value=obj.bpm;if(obj.beats)$('beats').value=obj.beats;if(obj.offset!=null)$('offset').value=obj.offset;if(obj.loop!=null)$('loop').checked=!!obj.loop;$('sequence').value=steps.map(s=>`${s.section} | ${s.chord}`).join('\n');update()}catch(e){alert('Unable to import: '+e.message)}};input.click()};
+renderRows();setInterval(()=>{if(player?.getCurrentTime){try{time=player.getCurrentTime()||0}catch(e){}}render()},120);
 </script></body></html>
