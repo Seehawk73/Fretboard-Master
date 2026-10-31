@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Fretboard Master 5.1 Plus \u2014 Complete Experience",
+  "name": "Fretboard Master 5.2.4 Plus — Complete Experience",
   "short_name": "Fretboard Master",
-  "description": "Fretboard Academy and YouTube Jam Lab",
+  "description": "Bass fretboard learning, Practice Coach, YouTube Jam Lab, and Knowledge Challenge",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

@@ -1,5 +1,5 @@
 // New cache name intentionally invalidates the previous 2.1 offline shell.
-const CACHE='fretboard-master-v5-2-plus';
+const CACHE='fretboard-master-v5-2-4-plus';
 const FILES=['./','./index.html','./academy.html','./youtube-jam.html','./practice-coach.html','./knowledge-challenge.html','./questions.js','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE&&(key.startsWith('project-bass-')||key.startsWith('fretboard-master-'))).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
