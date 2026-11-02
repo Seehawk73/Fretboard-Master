@@ -1,0 +1,52 @@
+name: Sync Development to preview
+
+on:
+  push:
+    branches: [Development]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: development-preview-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out main for the GitHub Pages preview
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Refresh only the /dev preview from Development
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin Development main
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Work from the current live branch; never change the live root files.
+          git checkout -B main origin/main
+          mkdir -p dev
+          find dev -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +
+
+          # Copy all top-level app files (including binary icons) from Development.
+          # Exclude repository metadata, workflows, and the preview itself.
+          mkdir -p /tmp/fretboard-preview-source
+          git archive origin/Development | tar -x -C /tmp/fretboard-preview-source
+          find /tmp/fretboard-preview-source -maxdepth 1 -type f -exec cp -- {} dev/ \\;
+          git add -A -- dev
+          if git diff --cached --quiet; then
+            echo 'Preview is already up to date.'
+            exit 0
+          fi
+          git commit -m 'chore: sync Development preview [skip ci]'
+          git push origin HEAD:main
+        env:
+          GIT_TERMINAL_PROMPT: "0"
