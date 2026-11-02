@@ -1,0 +1,12 @@
+Fretboard Master 5.4.1 — Clean Release Candidate
+
+Based on the user-tested 5.4.1 BETA. No temporary week-preview buttons.
+Confirmed in user testing: daily switching consistency, next-week variation, and restoring original current-week instructions.
+Automatic real-calendar Monday rollover has not yet been observed in real time.
+Live GitHub deployment is unchanged.
+
+To test locally: open a terminal in this directory and run
+python -m http.server 8043 --bind 127.0.0.1
+Then visit http://127.0.0.1:8043/
+
+Before deployment: test backup import/export and saved progress in this candidate.
