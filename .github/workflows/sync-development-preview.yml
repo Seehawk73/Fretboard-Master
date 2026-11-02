@@ -40,7 +40,7 @@ jobs:
           # Exclude repository metadata, workflows, and the preview itself.
           mkdir -p /tmp/fretboard-preview-source
           git archive origin/Development | tar -x -C /tmp/fretboard-preview-source
-          find /tmp/fretboard-preview-source -maxdepth 1 -type f -exec cp -- {} dev/ \\;
+          find /tmp/fretboard-preview-source -maxdepth 1 -type f -print0 | xargs -0 -r cp -t dev --
           git add -A -- dev
           if git diff --cached --quiet; then
             echo 'Preview is already up to date.'
